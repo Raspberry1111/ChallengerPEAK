@@ -150,7 +150,7 @@ public abstract class Challenge
     public abstract void Cleanup();
 }
 
-class ChallengePass: MonoBehaviourPun
+class ChallengePass: MonoBehaviour
 {
     public GameObject switchButton;
     public TextMeshProUGUI switchButtonText;
@@ -265,9 +265,14 @@ class ChallengePass: MonoBehaviourPun
         enableButtonRectTransform.anchorMax = new Vector2(1, 0);
         enableButtonRectTransform.anchoredPosition = new Vector2(-25 - enableButtonRectTransform.sizeDelta.x / 2, 25 + enableButtonRectTransform.sizeDelta.y / 2);
     }
-    
-    
 
+    private void OnEnable()
+    {
+        if (ShowChallenges)
+        {
+            UpdateChallenge();
+        }
+    }
 }
 
 class Patches
@@ -351,15 +356,15 @@ class Patches
     [HarmonyPostfix]
     static void UpdateAscentUI(AscentUI __instance)
     {
-        var rect = __instance.text.GetComponent<RectTransform>();
-        rect.anchorMin = new Vector2(1, 1);
-        rect.anchorMax = new Vector2(1, 1);
-        rect.anchoredPosition = new Vector2(-2, -rect.sizeDelta.y / 2);
-        
         foreach (var challenge in ChallengerPeakPlugin.LoadedChallenges)
         {
             __instance.text.text += "\n" + challenge.Title;
         }
         __instance.text.text = __instance.text.text.TrimStart();
+        
+        var rect = __instance.text.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(1, 1);
+        rect.anchorMax = new Vector2(1, 1);
+        rect.anchoredPosition = new Vector2(-2, -rect.sizeDelta.y - 3);
     }
 }

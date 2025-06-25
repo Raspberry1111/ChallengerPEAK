@@ -4,5 +4,6 @@
   "dependencies": [
     "BepInEx-BepInExPack_PEAK-5.4.2403"
   ],
-  "website_url": "https://github.com/Raspberry1111/ChallengerPEAK"
+  "website_url": "https://github.com/Raspberry1111/ChallengerPEAK",
+  "version_number": "0.0.1"
 }
