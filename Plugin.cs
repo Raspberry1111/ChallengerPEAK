@@ -223,8 +223,10 @@ class ChallengePass: MonoBehaviourPun
     private void StartButtonClicked()
 
     {
-        ChallengerPeakPlugin.Logger.LogInfo($"Sending challenges over RPC: {string.Join(", ", enabledChallenges)} | {PhotonNetwork.RaiseEvent(ChallengerPeakPlugin.SyncChallengesEventCode, enabledChallenges.ToArray(),
-            new RaiseEventOptions { Receivers = ReceiverGroup.All, InterestGroup = 0, CachingOption = EventCaching.AddToRoomCacheGlobal }, SendOptions.SendReliable)}");
+        var result = PhotonNetwork.RaiseEvent(ChallengerPeakPlugin.SyncChallengesEventCode, enabledChallenges.ToArray(),
+            new RaiseEventOptions { Receivers = ReceiverGroup.All, CachingOption = EventCaching.AddToRoomCacheGlobal }, SendOptions.SendReliable);
+        
+        ChallengerPeakPlugin.Logger.LogInfo($"Sending challenges over RPC: {string.Join(", ", enabledChallenges)} | Succeeded = {result}");
     }
     
     private void Start()
@@ -337,6 +339,14 @@ class Patches
         ChallengerPeakPlugin.CleanupChallenges();
         ChallengerPeakPlugin.CanInitializeChallenges = false;
         ChallengerPeakPlugin.HasReceivedChallenges = false;
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            var result = PhotonNetwork.RaiseEvent(ChallengerPeakPlugin.SyncChallengesEventCode, null,
+                new RaiseEventOptions { Receivers = ReceiverGroup.All, CachingOption = EventCaching.RemoveFromRoomCache }, SendOptions.SendReliable); // Clear old data from cache
+            ChallengerPeakPlugin.Logger.LogInfo($"Removing old challenges from Photon cache: Succeeded = {result}");
+
+        }
     }
 
     [HarmonyPatch(typeof(AscentUI), "Update")]
