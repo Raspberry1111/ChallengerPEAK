@@ -1,0 +1,8 @@
+{
+  "name": "ChallengerPEAK",
+  "description": "Adds support for additional challenges to be added to your runs",
+  "dependencies": [
+    "BepInEx-BepInExPack_PEAK-5.4.2403"
+  ],
+  "website_url": "https://github.com/Raspberry1111/ChallengerPEAK"
+}
