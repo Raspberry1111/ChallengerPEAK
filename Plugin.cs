@@ -20,22 +20,19 @@ namespace ChallengerPEAK;
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class ChallengerPeakPlugin : BaseUnityPlugin, IOnEventCallback
 {
-    static internal ChallengerPeakPlugin instance;
-    
     public const byte SyncChallengesEventCode = 125;
     
 
-    internal static new ManualLogSource Logger;
+    internal new static ManualLogSource Logger;
     
-    internal readonly static List<Challenge> Challenges = new List<Challenge>();
-    internal readonly static List<Challenge> LoadedChallenges = new List<Challenge>();
+    internal static readonly List<Challenge> Challenges = new List<Challenge>();
+    internal static readonly List<Challenge> LoadedChallenges = new List<Challenge>();
 
-    internal static bool hasReceivedChallenges = false;
-    internal static bool canInitializeChallenges = false;
+    internal static bool HasReceivedChallenges = false;
+    internal static bool CanInitializeChallenges = false;
     
     private void Awake()
     {
-        instance = this;
         Logger = base.Logger;
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 
@@ -52,7 +49,7 @@ public class ChallengerPeakPlugin : BaseUnityPlugin, IOnEventCallback
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
-    public static void RegisterChallenge(Challenge challenge)
+    static public void RegisterChallenge(Challenge challenge)
     {
         Challenges.Add(challenge);
     }
@@ -62,17 +59,17 @@ public class ChallengerPeakPlugin : BaseUnityPlugin, IOnEventCallback
         byte eventCode = photonEvent.Code;
         Logger.LogDebug($"Received event code: {eventCode}");
 
-        if (eventCode == SyncChallengesEventCode && photonEvent.CustomData != null && !hasReceivedChallenges)
+        if (eventCode == SyncChallengesEventCode && photonEvent.CustomData != null && !HasReceivedChallenges)
         {
 
             var challenges = (string[])photonEvent.CustomData;
             Logger.LogInfo($"Receiving challenges over RPC: {string.Join(", ", challenges)}");
 
             LoadChallenges(challenges);
-            hasReceivedChallenges = true;
+            HasReceivedChallenges = true;
 
 
-            if (canInitializeChallenges)
+            if (CanInitializeChallenges)
             {
                 InitializeChallenges();
             }
@@ -108,11 +105,11 @@ public class ChallengerPeakPlugin : BaseUnityPlugin, IOnEventCallback
 }
 
 // Copied mostly from PEAK's ButtonHoverFeedback but with some changed settings
-class AnimateButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+class AnimateButton : MonoBehaviour
 {
-    private float scale = 1f;
+    private float _scale = 1f;
 
-    private float vel;
+    private float _vel;
 
 
     private void Start()
@@ -122,28 +119,20 @@ class AnimateButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     private void OnClick()
     {
-        vel += 4.5f;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
+        _vel += 4.5f;
     }
 
     private void OnEnable()
     {
         transform.localScale = Vector3.one;
-        scale = 1f;
-        vel = 0f;
+        _scale = 1f;
+        _vel = 0f;
     }
     private void Update()
     {
-        vel = FRILerp.Lerp(vel, (1f - scale) * 25f, 20f);
-        scale += vel * Time.deltaTime;
-        transform.localScale = Vector3.one * scale;
+        _vel = FRILerp.Lerp(_vel, (1f - _scale) * 25f, 20f);
+        _scale += _vel * Time.deltaTime;
+        transform.localScale = Vector3.one * _scale;
     }
     
     
@@ -166,11 +155,11 @@ class ChallengePass: MonoBehaviourPun
     public GameObject enableButton; 
     public TextMeshProUGUI enableButtonText;
     
-    public static HashSet<string> enabledChallenges = new HashSet<string>();
+    static public HashSet<string> enabledChallenges = new HashSet<string>();
     public int selectedChallenge = 0;
     public BoardingPass boardingPass;
 
-    internal bool showChallenges = false;
+    internal bool ShowChallenges = false;
     
     /// <summary>
     ///  Calls update ascent on the boardingPass
@@ -200,14 +189,14 @@ class ChallengePass: MonoBehaviourPun
     
     private void OnEnable()
     {
-        showChallenges = false;
+        ShowChallenges = false;
     }
 
     private void SwitchButtonClicked()
     {
-        showChallenges = !showChallenges;
+        ShowChallenges = !ShowChallenges;
 
-        if (showChallenges)
+        if (ShowChallenges)
         {
             enableButton.SetActive(true);
             boardingPass.reward.SetActive(false);
@@ -271,8 +260,6 @@ class ChallengePass: MonoBehaviourPun
         
         enableButton.AddComponent<AnimateButton>();
         enableButton.GetComponent<Button>().onClick.AddListener(EnableButtonClicked);
-        // Animator animator = switchButton.AddComponent<Animator>();
-        // animator.runtimeAnimatorController = startGameButton.GetComponent<Animator>().runtimeAnimatorController;
         
         RectTransform enableButtonRectTransform = enableButton.GetComponent<RectTransform>();
         enableButtonRectTransform.anchorMin = new Vector2(1, 0);
@@ -302,7 +289,7 @@ class Patches
     {
         var challengePass = __instance.gameObject.GetComponent<ChallengePass>();
 
-        if (!challengePass.showChallenges)
+        if (!challengePass.ShowChallenges)
         {
             return true;
         }
@@ -320,7 +307,7 @@ class Patches
         var challengePass = __instance.gameObject.GetComponent<ChallengePass>();
         __instance.gameObject.AddComponent<PhotonView>().ObservedComponents = new List<Component> { challengePass };
 
-        if (!challengePass.showChallenges)
+        if (!challengePass.ShowChallenges)
         {
             return true;
         }
@@ -335,9 +322,9 @@ class Patches
     [HarmonyPostfix]
     static void InitializeChallenges()
     {
-        ChallengerPeakPlugin.canInitializeChallenges = true;
+        ChallengerPeakPlugin.CanInitializeChallenges = true;
 
-        if (ChallengerPeakPlugin.hasReceivedChallenges)
+        if (ChallengerPeakPlugin.HasReceivedChallenges)
         {
             ChallengerPeakPlugin.InitializeChallenges();
         }
@@ -348,13 +335,13 @@ class Patches
     static void CleanupChallenges()
     {
         ChallengerPeakPlugin.CleanupChallenges();
-        ChallengerPeakPlugin.canInitializeChallenges = false;
-        ChallengerPeakPlugin.hasReceivedChallenges = false;
+        ChallengerPeakPlugin.CanInitializeChallenges = false;
+        ChallengerPeakPlugin.HasReceivedChallenges = false;
     }
 
     [HarmonyPatch(typeof(AscentUI), "Update")]
     [HarmonyPostfix]
-    static void UpdateAsenctUI(AscentUI __instance)
+    static void UpdateAscentUI(AscentUI __instance)
     {
         var rect = __instance.text.GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(1, 1);
