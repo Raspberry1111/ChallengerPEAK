@@ -40,6 +40,8 @@ public class ChallengerPeakPlugin : BaseUnityPlugin, IOnEventCallback
         
         RegisterChallenge(new Challenges.NoTrace() );
         RegisterChallenge(new Challenges.FatalDamage() );
+        RegisterChallenge(new Challenges.NoCooking() );
+        RegisterChallenge(new Challenges.OneFlare() );
 
         PhotonNetwork.AddCallbackTarget(this);
     }
@@ -344,6 +346,7 @@ class Patches
         }
     }
 
+
     [HarmonyPatch(typeof(AscentUI), "Update")]
     [HarmonyPostfix]
     static void UpdateAscentUI(AscentUI __instance)
@@ -351,7 +354,7 @@ class Patches
         var rect = __instance.text.GetComponent<RectTransform>();
         rect.anchorMin = new Vector2(1, 1);
         rect.anchorMax = new Vector2(1, 1);
-        rect.anchoredPosition = new Vector2(-5, -20);
+        rect.anchoredPosition = new Vector2(-2, -rect.sizeDelta.y / 2);
         
         foreach (var challenge in ChallengerPeakPlugin.LoadedChallenges)
         {

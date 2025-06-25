@@ -8,7 +8,7 @@ public class NoTrace : Challenge
 {
     public override string ID => MyPluginInfo.PLUGIN_GUID + ".NoTrace";
     public override string Title => "Leave No Trace";
-    public override string Description => "Anything that can be placed on the mountain will no longer spawn\n<alpha=#CC><size=70%>And no, you won't get rerolls.";
+    public override string Description => "Anything that can be placed will no longer spawn\n<alpha=#CC><size=70%>And no, you won't get rerolls.";
     
     private Harmony _harmony;
 
@@ -28,22 +28,20 @@ public class NoTrace : Challenge
 
 class NoTracePatches
 {
-    [HarmonyPatch(typeof(Spawner), "GetObjectsToSpawn")]
+    [HarmonyPatch(typeof(Item), "Start")]
     [HarmonyPostfix]
-    public static void ChangeSpawnedObjects(ref List<GameObject> __result)
+    static void ItemStart(Item __instance)
     {
-        var newList = new List<GameObject>();
-        foreach (var gameObject in __result)
-        {
-            ChallengerPeakPlugin.Logger.LogInfo($"Intercepted item: {gameObject.name}");
-
-            var name = gameObject.name.ToLower();
-            if (!name.Contains("rope") && !name.Contains("climbingspike") && !name.Contains("chain") && !name.Contains("stove"))
-                newList.Add(gameObject);
-            else
-                Object.Destroy(gameObject);
-        }
+        var name = __instance.gameObject.name.ToLower();
         
-        __result = newList;
+        if (!name.Contains("rope") && !name.Contains("climbingspike") && !name.Contains("chain") &&
+            !name.Contains("stove"))
+            return;
+        
+        __instance.cooking.wreckWhenCooked = true;
+        
+        // A cook level of `5` is what the game uses so its what we'll use
+        __instance.SetCookedAmountRPC(5);
+        __instance.cooking.UpdateCookedBehavior();
     }
 }

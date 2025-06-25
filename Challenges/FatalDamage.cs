@@ -8,7 +8,7 @@ public class FatalDamage : Challenge
 {
     public override string ID => MyPluginInfo.PLUGIN_GUID + ".FatalDamage";
     public override string Title => "Fatal Damage";
-    public override string Description => "All fall damage is permanent";
+    public override string Description => "All injury damage (from the Scout Master or Falling) is permanent";
 
     private Harmony _harmony;
  
