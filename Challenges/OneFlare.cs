@@ -31,18 +31,13 @@ class OneFlarePatches
 {
     [HarmonyPatch(typeof(Spawner), "GetObjectsToSpawn")]
     [HarmonyPostfix]
-    public static void ChangeSpawnedObjects(ref List<GameObject> __result)
+    public static void ChangeSpawnedObjects(Spawner __instance, ref List<GameObject> __result)
     {
-        var newList = new List<GameObject>();
-
-        foreach (var gameObject in __result)
+        if (__instance.spawnMode == Spawner.SpawnMode.SingleItem)
         {
-            var name = gameObject.name.ToLower();
-
-            if (!name.Contains("flare"))
-                 newList.Add(gameObject);                           
+            return;
         }
         
-        __result = newList;
+        __result.RemoveAll(gameObject => gameObject.name.ToLower().Contains("flare"));
     }
 }

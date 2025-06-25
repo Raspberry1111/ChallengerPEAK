@@ -8,7 +8,7 @@ public class NoTrace : Challenge
 {
     public override string ID => MyPluginInfo.PLUGIN_GUID + ".NoTrace";
     public override string Title => "Leave No Trace";
-    public override string Description => "Anything that can be placed will no longer spawn\n<alpha=#CC><size=70%>And no, you won't get rerolls.";
+    public override string Description => "Anything that can be placed will spawn incinerated";
     
     private Harmony _harmony;
 
