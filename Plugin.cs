@@ -186,11 +186,6 @@ class ChallengePass: MonoBehaviourPun
             enableButtonText.text = "ENABLE";
         }
     }
-    
-    private void OnEnable()
-    {
-        ShowChallenges = false;
-    }
 
     private void SwitchButtonClicked()
     {
