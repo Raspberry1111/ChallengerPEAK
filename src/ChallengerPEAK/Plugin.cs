@@ -25,6 +25,8 @@ public partial class Plugin : BaseUnityPlugin
         ChallengeRegister.RegisterChallenge(new NoTrace());
         ChallengeRegister.RegisterChallenge(new OneFlare());
         ChallengeRegister.RegisterChallenge(new NoBackpacks());
+        ChallengeRegister.RegisterChallenge(new RuleZero());
+            
 
         Log.LogInfo($"Plugin {Name} is loaded!");
     }

@@ -37,6 +37,7 @@ internal class ChallengeManager : MonoBehaviourPunCallbacks
     [PunRPC]
     public void SyncChallengesRPC(string[] challenges)
     {
+        if (challenges.Length == 0) return;
         if (HasReceivedChallenges)
         {
             Plugin.Log.LogInfo("Received challenges after first receive. Ignoring...");

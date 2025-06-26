@@ -10,6 +10,8 @@ namespace ChallengerPEAK;
 
 internal class ChallengePass : MonoBehaviour
 {
+    internal static ChallengePass? Instance;
+    
     public GameObject? switchButton;
     public TextMeshProUGUI? switchButtonText;
     public GameObject? enableButton;
@@ -25,11 +27,16 @@ internal class ChallengePass : MonoBehaviour
     private Challenge SelectedChallenge =>
         ChallengeRegister.RegisteredChallenges.Values.ElementAt(SelectedChallengeIdx);
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+    
     private void Start()
     {
         var panel = gameObject.transform.Find("BoardingPass").Find("Panel");
 
-        panel.Find("StartGameButton").GetComponent<Button>().onClick.AddListener(StartButtonClicked);
+        // panel.Find("StartGameButton").GetComponent<Button>().onClick.AddListener(StartButtonClicked);
 
         switchButton = TMP_DefaultControls.CreateButton(new TMP_DefaultControls.Resources());
         switchButtonText = switchButton.GetComponentInChildren<TextMeshProUGUI>();
@@ -116,7 +123,7 @@ internal class ChallengePass : MonoBehaviour
         UpdateChallenge();
     }
 
-    private void StartButtonClicked()
+    internal void SyncChallenges()
 
     {
         // var result = PhotonNetwork.RaiseEvent(Plugin.SyncChallengesEventCode, _enabledChallenges.ToArray(),
@@ -206,5 +213,12 @@ internal partial class Patches
         challengePass.UpdateChallenge();
 
         return false;
+    }
+
+    [HarmonyPatch(typeof(AirportCheckInKiosk), "StartGame")]
+    [HarmonyPrefix]
+    private static void SyncChallengesWhenStartingGame()
+    {
+        ChallengePass.Instance!.SyncChallenges();
     }
 }
