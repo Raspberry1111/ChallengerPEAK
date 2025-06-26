@@ -4,7 +4,7 @@ namespace ChallengerPEAK.Challenges;
 
 public class NoCooking : Challenge
 {
-    public override string ID => MyPluginInfo.PLUGIN_GUID + ".NoCooking";
+    public override string ID => Plugin.Id + ".NoCooking";
     public override string Title => "No Cooking";
     public override string Description => "Everything gets destroyed when cooked";
     
@@ -12,14 +12,14 @@ public class NoCooking : Challenge
 
     public override void Initialize()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Initializing No Cooking");
+        Plugin.Log.LogInfo("Initializing No Cooking");
         _harmony = new Harmony(ID);
         _harmony.PatchAll(typeof(NoCookingPatches));
     }
 
     public override void Cleanup()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Cleaning up No Cooking");
+        Plugin.Log.LogInfo("Cleaning up No Cooking");
     }
 }
 

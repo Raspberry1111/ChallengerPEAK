@@ -1,12 +1,10 @@
-using System.Collections.Generic;
 using HarmonyLib;
-using UnityEngine;
 
 namespace ChallengerPEAK.Challenges;
 
 public class NoTrace : Challenge
 {
-    public override string ID => MyPluginInfo.PLUGIN_GUID + ".NoTrace";
+    public override string ID => Plugin.Id + ".NoTrace";
     public override string Title => "Leave No Trace";
     public override string Description => "Anything that can be placed will spawn incinerated";
     
@@ -14,14 +12,14 @@ public class NoTrace : Challenge
 
     public override void Initialize()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Initializing No Trace");
+        Plugin.Log.LogInfo("Initializing No Trace");
         _harmony = new Harmony(ID);
         _harmony.PatchAll(typeof(NoTracePatches));
     }
 
     public override void Cleanup()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Cleaning up No Trace");
+        Plugin.Log.LogInfo("Cleaning up No Trace");
         _harmony.UnpatchSelf();
     }
 }

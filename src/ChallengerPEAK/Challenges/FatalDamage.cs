@@ -1,12 +1,10 @@
-using BepInEx.Logging;
 using HarmonyLib;
-using Peak.Afflictions;
 
 namespace ChallengerPEAK.Challenges;
 
 public class FatalDamage : Challenge
 {
-    public override string ID => MyPluginInfo.PLUGIN_GUID + ".FatalDamage";
+    public override string ID => Plugin.Id + ".FatalDamage";
     public override string Title => "Fatal Damage";
     public override string Description => "All injury damage (from the Scout Master or Falling) is permanent";
 
@@ -14,7 +12,7 @@ public class FatalDamage : Challenge
  
     public override void Initialize()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Initializing Fatal Damage");
+        Plugin.Log.LogInfo("Initializing Fatal Damage");
         _harmony = new Harmony(ID);
         _harmony.PatchAll(typeof(FatalDamagePatches));
 
@@ -22,7 +20,7 @@ public class FatalDamage : Challenge
 
     public override void Cleanup()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Cleaning up Fatal Damage");
+        Plugin.Log.LogInfo("Cleaning up Fatal Damage");
         _harmony.UnpatchSelf();
     }
 }

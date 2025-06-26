@@ -30,7 +30,7 @@ Simply search for `ChallengerPEAK` and hit download
 ## Developers
 These challenges can (in theory, it hasn't been fully tested yet) by other mods
 
-The `ChallengerPeakPlugin` class exposes a method called `registerChallenge` that accepts an instance of a type derived from the `Challenge` abstract class.
+The `Plugin` class exposes a method called `registerChallenge` that accepts an instance of a type derived from the `Challenge` abstract class.
 
 The only requirements to derive `Challenge` are
 - An ID

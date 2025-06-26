@@ -6,7 +6,7 @@ namespace ChallengerPEAK.Challenges;
 
 public class OneFlare : Challenge
 {
-    public override string ID => MyPluginInfo.PLUGIN_GUID + ".OneFlare";
+    public override string ID => Plugin.Id + ".OneFlare";
     public override string Title => "One Flare";
 
     public override string Description =>
@@ -16,13 +16,13 @@ public class OneFlare : Challenge
 
     public override void Initialize()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Initializing One Flare");
+        Plugin.Log.LogInfo("Initializing One Flare");
         _harmony = new Harmony(ID);
         _harmony.PatchAll(typeof(OneFlarePatches));    }
 
     public override void Cleanup()
     {
-        ChallengerPeakPlugin.Logger.LogInfo("Cleaning up One Flare");
+        Plugin.Log.LogInfo("Cleaning up One Flare");
         _harmony.UnpatchSelf();
     }
 }
