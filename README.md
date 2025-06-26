@@ -22,6 +22,10 @@ No Trace - Anything that can be placed will spawn incinerated
 
 One Flare - No flares spawn from luggage. Good luck on Ascent 4+
 
+No Backpacks - No backpacks spawn
+
+Rule 0 - Scoutmaster Myers spawns when someone dies
+
 ## Installation
 
 ### Automated
