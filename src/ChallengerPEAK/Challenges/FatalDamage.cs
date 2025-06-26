@@ -25,11 +25,11 @@ public class FatalDamage : Challenge
     }
 }
 
-class FatalDamagePatches
+internal class FatalDamagePatches
 {
     [HarmonyPatch(typeof(CharacterAfflictions), "AddStatus")]
     [HarmonyPrefix]
-    public static void ChangeAfflictionTypes(ref CharacterAfflictions.STATUSTYPE statusType)
+    private static void ChangeAfflictionTypes(ref CharacterAfflictions.STATUSTYPE statusType)
     { 
         if (statusType == CharacterAfflictions.STATUSTYPE.Injury)
         {

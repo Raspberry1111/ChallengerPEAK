@@ -23,11 +23,11 @@ public class NoCooking : Challenge
     }
 }
 
-class NoCookingPatches
+internal class NoCookingPatches
 {
     [HarmonyPatch(typeof(Item), "Start")]
     [HarmonyPostfix]
-    static void ItemStart(Item __instance)
+    private static void ItemStart(Item __instance)
     {
         __instance.cooking.wreckWhenCooked = true;
     }

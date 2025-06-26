@@ -24,11 +24,11 @@ public class NoTrace : Challenge
     }
 }
 
-class NoTracePatches
+internal class NoTracePatches
 {
     [HarmonyPatch(typeof(Item), "Start")]
     [HarmonyPostfix]
-    static void ItemStart(Item __instance)
+    private static void ItemStart(Item __instance)
     {
         var name = __instance.gameObject.name.ToLower();
         

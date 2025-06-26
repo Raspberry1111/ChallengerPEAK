@@ -27,11 +27,11 @@ public class OneFlare : Challenge
     }
 }
 
-class OneFlarePatches
+internal class OneFlarePatches
 {
     [HarmonyPatch(typeof(Spawner), "GetObjectsToSpawn")]
     [HarmonyPostfix]
-    public static void ChangeSpawnedObjects(Spawner __instance, ref List<GameObject> __result)
+    private static void ChangeSpawnedObjects(Spawner __instance, ref List<GameObject> __result)
     {
         if (__instance.spawnMode == Spawner.SpawnMode.SingleItem)
         {
