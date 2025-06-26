@@ -1,28 +1,30 @@
+using System.Diagnostics.CodeAnalysis;
 using HarmonyLib;
 
 namespace ChallengerPEAK.Challenges;
 
 public class NoCooking : Challenge
 {
-    public override string ID => Plugin.Id + ".NoCooking";
+    // ReSharper disable once InconsistentNaming
+    private const string _id = Plugin.Id + ".NoCooking";
+    private readonly Harmony _harmony = new(_id);
+
+    public override string ID => _id;
     public override string Title => "No Cooking";
     public override string Description => "Everything gets destroyed when cooked";
-    
-    private Harmony _harmony;
 
     public override void Initialize()
     {
-        Plugin.Log.LogInfo("Initializing No Cooking");
-        _harmony = new Harmony(ID);
         _harmony.PatchAll(typeof(NoCookingPatches));
     }
 
     public override void Cleanup()
     {
-        Plugin.Log.LogInfo("Cleaning up No Cooking");
+        _harmony.UnpatchSelf();
     }
 }
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 internal class NoCookingPatches
 {
     [HarmonyPatch(typeof(Item), "Start")]
