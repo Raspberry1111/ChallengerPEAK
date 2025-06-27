@@ -69,7 +69,9 @@ internal class RuleZeroPatches
         if (!closest)
             return;
             
-        __instance.SetCurrentTarget(closest, 40F);
+        __instance.SetCurrentTarget(closest, 60F);
+        __instance.gameObject.transform.position = RuleZero.PlayerJustDiedPosition.Value;
+        
         RuleZero.PlayerJustDiedPosition = null;
     }
 }
